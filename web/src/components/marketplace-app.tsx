@@ -144,43 +144,77 @@ const transactionFlow = [
 
 const productCards = [
   {
-    title: "主产品取舍",
-    body: "Hackathon 版本聚焦 OPC Trust Market：Verified OPC 发布知识资产，买家用 MON 订阅。OPC Match 作为后续上游发现层。",
-    icon: ShieldCheck,
+    title: "AI 正在放大 OPC 供给",
+    body: "独立研究者、顾问、产品经理和数据分析师，借助 AI 与 Agent，可以产出过去一个小团队才能完成的报告、模板、数据包和方法论。",
+    icon: BrainCircuit,
   },
   {
-    title: "交易对象",
-    body: "v1 只交易 Knowledge Asset Subscription，不交易招聘岗位、泛技能或执行型外包。",
+    title: "传统平台只解决发布",
+    body: "Notion、PDF、公众号或 Gumroad 能展示内容，但很难证明版本、更新、真实订阅、交易后反馈和退款争议路径。",
+    icon: FileCheck2,
+  },
+  {
+    title: "我们交易 Knowledge Asset",
+    body: "交易对象不是人、简历或一次性外包，而是 Document / Report、Template / Methodology、Dataset / Annotation Pack。",
     icon: Boxes,
   },
   {
-    title: "买家获得",
-    body: "订阅期内的 Usage Right、Content Access、Update Access，以及永久可追溯的 Purchase Record。",
-    icon: LockKeyhole,
-  },
-  {
-    title: "Monad 角色",
-    body: "Monad 记录资产、版本、订阅、反馈、托管放款和退款裁决；正文内容仍保存在链下。",
+    title: "Monad 是 OPC Trust Layer",
+    body: "Monad 不存全文，也不是支付壳；它记录资产存在、版本发布、订阅购买、结构化反馈、托管释放和退款裁决。",
     icon: WalletCards,
   },
 ];
 
-const assetStandards = [
-  "Clear Promise",
-  "Preview",
-  "Version hash",
-  "Verified OPC",
-  "MON price",
-  "Reputation",
+const trustQuestions = [
+  "资产真的存在吗？",
+  "它是否持续更新？",
+  "发布者是不是可信 OPC？",
+  "之前有没有人订阅？",
+  "我拿到的是哪个版本？",
+  "内容不符时能否退款争议？",
 ];
 
-const demoLoop = [
-  "Verified OPC 发布 AI 出海增长审计报告包",
-  "资产页展示摘要、样例、版本、生产方式和声誉",
-  "买家连接钱包，用 MON 订阅当前版本",
-  "OPCMarket 记录 subscription 和 access hash",
-  "买家提交结构化反馈",
-  "平台放款，2.5% 平台费可解释",
+const knowledgeContractFields = [
+  "标题与摘要",
+  "免费预览",
+  "生产方式披露",
+  "内容 URI",
+  "版本 hash",
+  "链上订阅与反馈",
+];
+
+const monadReasons = [
+  {
+    title: "EVM compatible",
+    text: "直接使用 Solidity、viem、wagmi、MetaMask，把 Web2 产品体验和 Web3 可信记录接起来。",
+  },
+  {
+    title: "低延迟",
+    text: "上传、发布、订阅、查看、反馈都需要快速确认，交易型 marketplace 不能像慢速 mint 页面。",
+  },
+  {
+    title: "适合小额高频",
+    text: "知识资产订阅金额不一定高，低成本让版本更新、反馈和订阅行为更适合真实上链。",
+  },
+  {
+    title: "可索引市场数据",
+    text: "Trust Events 可形成资产排行、声誉摘要、订阅历史和买方决策信号。",
+  },
+];
+
+const shortestLoop = [
+  "OPC 上传一个知识资产",
+  "发布一个有效版本",
+  "买家浏览资产页",
+  "用 MON 完成真实订阅",
+  "平台记录订阅事件",
+  "买家获得内容访问并提交反馈",
+];
+
+const roadmapItems = [
+  "接入稳定 indexer，同步合约广场、我的合约和声誉历史",
+  "把内容存储升级到 IPFS、Arweave 或专用存储，并完善访问控制",
+  "扩展声誉和争议系统，让订阅、退款、反馈沉淀为 OPC 长期信用",
 ];
 
 const demoBeats = [
@@ -577,16 +611,16 @@ function ProductShowcase({
           <div className="min-w-0">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#e2b64f]/20 bg-[#e2b64f]/10 px-3 py-1.5 text-xs font-semibold text-[#f5d98a]">
               <span className="size-1.5 rounded-full bg-[#e2b64f] shadow-[0_0_10px_rgba(226,182,79,0.9)]" />
-              Final product model
+              Monad Blitz Demo
             </div>
-            <h1 className="mt-5 max-w-4xl font-serif text-[36px] font-black leading-[1.12] text-white md:text-[54px]">
-              OPC KnoVault 是 AI 时代 OPC 的
+            <h1 className="mt-5 max-w-4xl font-serif text-[34px] font-black leading-[1.12] text-white md:text-[52px]">
+              OPC KnoVault：让一人公司的知识资产完成
               <span className="bg-[linear-gradient(135deg,#fafafa,#f5d98a,#6b7db3)] bg-clip-text text-transparent">
-                可信知识资产交易层
+                真实交易和可信留痕
               </span>
             </h1>
             <p className="mt-5 max-w-3xl text-[15px] leading-7 text-[#a1a1aa] md:text-base">
-              个人或小团队把可复用知识、模板、方法论和数据包发布成可验证资产；买家用 MON 订阅访问权；Monad 记录资产、版本、订阅、反馈、托管放款和退款裁决。
+              AI 会让越来越多 OPC 产出高价值报告、方法论、模板和数据包。但市场缺少的不是发布工具，而是可信交易层：证明资产存在、版本持续更新、买家真实订阅、交易后反馈和退款争议都可追溯。
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <button
@@ -608,15 +642,15 @@ function ProductShowcase({
           </div>
 
           <div className="rounded-2xl border border-[#e2b64f]/25 bg-[linear-gradient(145deg,rgba(226,182,79,0.16),rgba(24,24,27,0.96))] p-5">
-            <p className="text-sm font-bold text-[#f5d98a]">v1 聚焦</p>
-            <h2 className="mt-2 text-2xl font-black text-white">Knowledge Asset Subscription</h2>
+            <p className="text-sm font-bold text-[#f5d98a]">一句话</p>
+            <h2 className="mt-2 text-2xl font-black text-white">基于 Monad 的 OPC 知识合约交易平台</h2>
             <p className="mt-3 text-sm leading-6 text-[#d4d4d8]">
-              交易边界清楚，5 分钟内能演示付款、访问、反馈、放款和链上事件。
+              买家不是买一个作者主页，而是订阅一个具体 Knowledge Asset；Monad 记录市场行为证据，让声誉从真实交易中长出来。
             </p>
             <div className="mt-5 grid gap-2">
-              <ReadinessItem text="不是招聘平台，也不是外包平台" />
-              <ReadinessItem text="交易的是可复用资产的访问权" />
-              <ReadinessItem text="首版演示 2.5% Subscription Fee" />
+              <ReadinessItem text="交易对象：Knowledge Asset" />
+              <ReadinessItem text="支付方式：MON 订阅访问权" />
+              <ReadinessItem text="可信记录：版本、订阅、反馈、托管、争议" />
             </div>
           </div>
         </div>
@@ -641,27 +675,17 @@ function ProductShowcase({
         })}
       </section>
 
-      <section className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+      <section className="grid gap-5 xl:grid-cols-[0.92fr_1.08fr]">
         <div className="rounded-2xl border border-white/10 bg-[#0f0f13]/85 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.28)]">
-          <h2 className="text-xl font-black text-white">可上架资产标准</h2>
+          <h2 className="text-xl font-black text-white">买家真正担心什么</h2>
           <p className="mt-2 text-sm leading-6 text-[#a1a1aa]">
-            一个资产必须说明承诺、预览、版本、来源、价格和声誉；AI 生产方式作为元数据披露，不做黑箱。
+            传统内容平台解决的是发布，不是可信交易。KnoVault 把这些问题变成链上可追踪的市场事件。
           </p>
           <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {assetStandards.map((standard) => (
-              <div className="rounded-xl border border-white/10 bg-white/[0.025] px-3 py-3" key={standard}>
-                <p className="text-sm font-bold text-white">{standard}</p>
+            {trustQuestions.map((question) => (
+              <div className="rounded-xl border border-white/10 bg-white/[0.025] px-3 py-3" key={question}>
+                <p className="text-sm font-bold text-white">{question}</p>
               </div>
-            ))}
-          </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {["Human-authored", "AI-assisted", "Agent-executed"].map((mode) => (
-              <span
-                className="rounded-lg border border-[#e2b64f]/25 bg-[#e2b64f]/10 px-3 py-1.5 text-xs font-semibold text-[#f5d98a]"
-                key={mode}
-              >
-                {mode}
-              </span>
             ))}
           </div>
         </div>
@@ -669,9 +693,9 @@ function ProductShowcase({
         <div className="rounded-2xl border border-white/10 bg-[#0f0f13]/85 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.28)]">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <h2 className="text-xl font-black text-white">黑客松最短闭环</h2>
+              <h2 className="text-xl font-black text-white">什么是 Knowledge Contract</h2>
               <p className="mt-2 text-sm leading-6 text-[#a1a1aa]">
-                评委只需要看到一条真实交易线：资产发布、MON 订阅、链上记录、反馈、放款。
+                一份知识资产被包装成可订阅合约：有内容说明，也有版本、访问、订阅和反馈记录。
               </p>
             </div>
             <button
@@ -679,12 +703,12 @@ function ProductShowcase({
               onClick={() => onSelectNav("discover")}
               type="button"
             >
-              现在演示交易
+              进入合约广场
               <ArrowUpRight size={16} />
             </button>
           </div>
           <div className="mt-5 grid gap-3 md:grid-cols-2">
-            {demoLoop.map((item, index) => (
+            {knowledgeContractFields.map((item, index) => (
               <div
                 className="flex gap-3 rounded-2xl border border-white/10 bg-white/[0.025] p-4"
                 key={item}
@@ -700,19 +724,70 @@ function ProductShowcase({
       </section>
 
       <section className="rounded-2xl border border-white/10 bg-[#0f0f13]/85 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.28)]">
-        <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1fr]">
-          <InfoBlock
-            label="资产类型"
-            value="Document / Report · Template / Methodology · Dataset / Annotation Pack"
-          />
-          <InfoBlock
-            label="买家没有买到"
-            value="所有权、转售权、二次分发权、链上正确性保证、未来执行服务 SLA"
-          />
-          <InfoBlock
-            label="链下保存"
-            value="正文、预览、审核材料、完整反馈、搜索推荐和声誉聚合"
-          />
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h2 className="text-xl font-black text-white">为什么必须是 Monad</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-[#a1a1aa]">
+              如果只是收钱，可以用 Stripe 或数据库。KnoVault 需要的是可信市场数据层：把资产、版本、订阅、反馈和争议变成可索引、可组合、可验证的 Trust Events。
+            </p>
+          </div>
+          <span className="rounded-xl border border-[#e2b64f]/25 bg-[#e2b64f]/10 px-4 py-3 text-sm font-bold text-[#f5d98a]">
+            OPC Trust Layer
+          </span>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {monadReasons.map((reason) => (
+            <div className="rounded-2xl border border-white/10 bg-white/[0.025] p-4" key={reason.title}>
+              <p className="text-sm font-black text-white">{reason.title}</p>
+              <p className="mt-2 text-sm leading-6 text-[#a1a1aa]">{reason.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
+        <div className="rounded-2xl border border-white/10 bg-[#0f0f13]/85 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.28)]">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="text-xl font-black text-white">v1 最短闭环</h2>
+              <p className="mt-2 text-sm leading-6 text-[#a1a1aa]">
+                我们不做完整社区、复杂推荐或执行型外包，只证明一条真实交易线能成立。
+              </p>
+            </div>
+            <button
+              className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#e2b64f] px-4 text-sm font-black text-[#09090b] transition hover:bg-[#f5d98a]"
+              onClick={() => onSelectNav("discover")}
+              type="button"
+            >
+              现在演示
+              <ArrowUpRight size={16} />
+            </button>
+          </div>
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            {shortestLoop.map((item, index) => (
+              <div
+                className="flex gap-3 rounded-2xl border border-white/10 bg-white/[0.025] p-4"
+                key={item}
+              >
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#e2b64f] text-xs font-black text-[#09090b]">
+                  {index + 1}
+                </span>
+                <p className="text-sm leading-6 text-[#d4d4d8]">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-[#0f0f13]/85 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.28)]">
+          <h2 className="text-xl font-black text-white">下一步路线</h2>
+          <p className="mt-2 text-sm leading-6 text-[#a1a1aa]">
+            让每个优秀 OPC 都有一个可信资产货架，让买家买到的不是孤立文件，而是持续更新、有交易记录、有声誉沉淀的知识合约。
+          </p>
+          <div className="mt-5 grid gap-3">
+            {roadmapItems.map((item) => (
+              <ReadinessItem key={item} text={item} />
+            ))}
+          </div>
         </div>
       </section>
     </div>
@@ -1518,17 +1593,6 @@ function InfoPill({ label, value }: { label: string; value: string }) {
     <div className="rounded-xl bg-white/[0.04] px-3 py-3">
       <p className="text-xs font-medium text-[#71717a]">{label}</p>
       <p className="mt-1 truncate text-sm font-bold text-white">{value}</p>
-    </div>
-  );
-}
-
-function InfoBlock({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.025] p-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#71717a]">
-        {label}
-      </p>
-      <p className="mt-2 text-sm leading-6 text-[#d4d4d8]">{value}</p>
     </div>
   );
 }
