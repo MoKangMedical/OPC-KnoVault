@@ -1,0 +1,31 @@
+{
+  "name": "opc-trust-market",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "dev": "next dev web --webpack",
+    "build": "next build web --webpack",
+    "typecheck": "tsc -p web/tsconfig.json --noEmit",
+    "artifact:contract": "node scripts/build-contract-artifact.mjs",
+    "wallet:monad": "node scripts/monad-agent-wallet.mjs",
+    "deploy:monad": "node scripts/deploy-opc-trust-market.mjs"
+  },
+  "dependencies": {
+    "@rainbow-me/rainbowkit": "^2.2.11",
+    "@tanstack/react-query": "^5.100.10",
+    "@types/node": "^25.7.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "typescript": "^5.9.3",
+    "viem": "^2.48.11",
+    "wagmi": "^2.19.5"
+  },
+  "devDependencies": {
+    "solc": "^0.8.35"
+  }
+}

@@ -1,0 +1,46 @@
+type Opc @entity {
+  id: ID!
+  wallet: String!
+  verifiedAtBlock: BigInt!
+  transactionHash: String!
+}
+
+type KnowledgeContract @entity {
+  id: ID!
+  assetId: BigInt!
+  owner: String!
+  assetType: Int!
+  productionMode: Int!
+  priceWei: BigInt!
+  metadataUri: String!
+  activeVersionId: BigInt
+  contentHash: String
+  contentUri: String
+  subscriberCount: Int!
+  feedbackCount: Int!
+  scoreTotal: Int!
+  createdAtBlock: BigInt!
+  transactionHash: String!
+}
+
+type Subscription @entity {
+  id: ID!
+  subscriptionId: BigInt!
+  assetId: BigInt!
+  buyer: String!
+  activeVersionId: BigInt!
+  amountWei: BigInt!
+  expiresAt: BigInt!
+  escrowStatus: String!
+  transactionHash: String!
+}
+
+type TrustEvent @entity {
+  id: ID!
+  type: String!
+  assetId: BigInt
+  subscriptionId: BigInt
+  actor: String
+  transactionHash: String!
+  blockNumber: BigInt!
+}

@@ -1,0 +1,23 @@
+name: opc-trust-market
+description: Monad testnet indexer for OPC knowledge contract marketplace events.
+
+field_selection:
+  transaction_fields:
+    - hash
+
+networks:
+  - id: 10143
+    start_block: 0
+    contracts:
+      - name: OPCTrustMarket
+        address:
+          - "0xREPLACE_WITH_DEPLOYED_CONTRACT"
+        handler: src/EventHandlers.ts
+        events:
+          - event: OpcVerified(address indexed opc)
+          - event: KnowledgeAssetRegistered(uint256 indexed assetId, address indexed owner, uint8 assetType, uint8 productionMode, uint256 priceWei, string metadataUri)
+          - event: AssetVersionPublished(uint256 indexed assetId, uint256 indexed versionId, bytes32 contentHash, string uri)
+          - event: SubscriptionPurchased(uint256 indexed subscriptionId, uint256 indexed assetId, address indexed buyer, uint256 activeVersionId, uint256 amountWei, uint256 expiresAt)
+          - event: StructuredFeedbackSubmitted(uint256 indexed assetId, address indexed buyer, uint8 score)
+          - event: EscrowReleased(uint256 indexed subscriptionId, address indexed seller, uint256 sellerAmountWei, uint256 platformFeeWei)
+          - event: FirstTermRefunded(uint256 indexed subscriptionId, address indexed buyer, uint256 amountWei)

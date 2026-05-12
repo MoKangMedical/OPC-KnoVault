@@ -1,0 +1,12 @@
+.DS_Store
+.agents/
+node_modules/
+.next/
+out/
+cache/
+broadcast/
+*.tsbuildinfo
+*.local
+.env
+.env.local
+web/.env.local
