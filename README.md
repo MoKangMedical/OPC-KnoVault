@@ -1,152 +1,98 @@
 # OPC KnoVault
 
-Monad testnet 上的 OPC 知识合约交易平台。用户可以用 MetaMask 部署市场合约、上传知识合约、发布版本，并在合约广场用真实 testnet MON 订阅交易。
+OPC KnoVault is a Monad Blitz MVP for trusted knowledge-asset subscriptions in the one-person-company era. It is designed as the trusted transaction layer inside the broader [OPC Platform](https://opcplatform.cn/index.html) ecosystem.
 
-## 功能
+Verified OPCs package reports, templates, methodologies, and dataset packs as verifiable assets. Buyers compare asset pages, preview samples, subscribe with MON, receive content access, and leave structured feedback. Monad records the trust events: OPC verification, asset existence, version publication, subscription, escrow release, refund dispute, and reputation feedback.
 
-- 合约广场：展示链上登记的 Knowledge Contract。
-- 上传合约：调用 `registerAsset` 登记知识合约，并调用 `publishVersion` 发布有效版本。
-- 真实订阅：调用 `subscribe(assetId)`，通过 MetaMask 支付 Monad testnet MON。
-- 我的合约：查看当前钱包上传的合约和订阅记录。
-- 链上账本：同步合约事件，展示交易回执。
-- MetaMask 部署：无需 Foundry，本页面可直接用 MetaMask 部署 `OPCTrustMarket`。
+The current demo also includes an AI demand-matching console derived from the OPC Match / MONSKILLS workflow. Buyers choose an opportunity template, see the recommended Knowledge Asset, review match reasoning and risk notes, then continue into the subscription transaction. The UI follows the OPC Platform dark/gold visual system so it can sit beside 创业助手、揭榜挂帅、超级个体、学院 and 社区 as a transaction-focused subplatform.
 
-## 技术栈
+## Hackathon Target
 
-- `web/`：Next.js + RainbowKit + Wagmi + viem。
-- `contracts/OPCTrustMarket.sol`：Monad/EVM 市场合约，处理登记、版本、订阅、托管、退款、评价事件。
-- `scripts/build-contract-artifact.mjs`：用 `solc` 生成前端部署 bytecode。
-- `indexer/`：Envio HyperIndex-ready 模板，生产环境可用于完整历史事件同步。
-- `src/domain/marketplace.js` 和 `tests/marketplace.test.js`：领域核心和行为测试。
+Build the smallest credible loop for an OPC knowledge subscription market:
 
-## 本地运行
+1. Platform verifies an OPC from a wallet, portfolio sample, and manual review pack.
+2. Verified OPC publishes a Knowledge Asset with metadata URI, asset hash, version hash, price, and subscription duration.
+3. Buyer selects an opportunity template and AI recommends a matching Knowledge Asset with reasoning, trust evidence, risk notes, and an intent summary hash.
+4. Buyer reviews the asset page, free preview, verification state, version record, and price.
+5. Buyer subscribes with Monad native token; first-term payment is held in escrow.
+6. Buyer submits structured feedback or requests a refund if the content clearly mismatches the description.
+7. Platform releases the first-term payment with a platform fee, or resolves a dispute and refunds the buyer.
+
+## Why Monad
+
+- EVM-compatible development path with `wagmi`, `viem`, RainbowKit, and Foundry.
+- Low-latency UX is useful for checkout, event confirmation, and repeated subscription activity.
+- Chain IDs used by this repo: testnet `10143`, mainnet `143`.
+- Monad is not a payment wrapper here. It is the trust-event layer for asset, version, subscription, feedback, escrow, and dispute records.
+
+## Repo Layout
+
+- `web/` Next.js app with RainbowKit wallet connect, asset-first marketplace UI, local demo state, and contract call wiring.
+- `contracts/` Foundry contract for OPC verification, asset registration, version publication, subscription escrow, feedback, platform release, and refund review.
+- `docs/` competition notes, product decisions, demo script, submission checklist, and MOJO case benchmark.
+
+## Monad Testnet Deployment
+
+- Contract: `0x7BF016e8f9bBC6998BB15Ed8238052ed94d44C56`
+- Deploy tx: `0xae76dc722449d84d3e33123dfd4e8acff277061ae48eab7effe5379755a6a400`
+- Chain ID: `10143`
+- RPC: `https://testnet-rpc.monad.xyz`
+- Explorer: `https://testnet.monadexplorer.com/`
+
+## Competition Readiness
+
+- Demo script: `docs/DEMO_SCRIPT.md`
+- Submission checklist: `docs/SUBMISSION_CHECKLIST.md`
+- Final product model: `docs/FINAL_PRODUCT_MODEL.md`
+- Notion brief summary: `docs/HACKATHON_BRIEF.md`
+- MOJO case benchmark: `docs/MOJO_CASE_STUDY.md`
+- Logo asset: `web/public/opc-knovault-logo.svg`
+
+The 5-minute demo should start from the live app, show a Knowledge Asset page, subscribe with MON, then show Monad trust events and the first-term escrow / feedback path.
+
+## Current MVP Boundary
+
+Onchain:
+
+- Verified OPC profile record
+- Knowledge Asset commitment
+- Current version hash and version event
+- Subscription escrow and access record
+- Structured feedback event
+- Platform fee release and dispute refund
+
+Offchain:
+
+- Full asset content
+- Markdown/PDF/dataset storage
+- AI opportunity matching, search, category browsing, and previews
+- Manual review materials
+- Reputation scoring and ranking
+
+## Local Run
 
 ```bash
-npm install
-npm run artifact:contract
+cd web
 npm run dev
 ```
 
-打开：
-
-```text
-http://localhost:3000
-```
-
-验证：
-
-```bash
-npm test
-npm run typecheck
-npm run build
-```
-
-## Monad Testnet
-
-- Chain ID: `10143`
-- RPC: `https://testnet-rpc.monad.xyz/`
-- Symbol: `MON`
-- Explorer: `https://testnet.monadexplorer.com/`
-
-前端有“添加 Monad testnet”按钮，会向 MetaMask 发起 `wallet_addEthereumChain` 请求。
-
-## 环境变量
-
-可选复制：
-
-```bash
-cp web/.env.example web/.env.local
-```
-
-可选配置：
+Set wallet and contract variables in `web/.env.local` when available:
 
 ```bash
 NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=
-NEXT_PUBLIC_OPC_TRUST_MARKET_ADDRESS=
-NEXT_PUBLIC_INDEXER_GRAPHQL_URL=
+NEXT_PUBLIC_OPC_MARKET_ADDRESS=
 ```
 
-如果不配置 `NEXT_PUBLIC_OPC_TRUST_MARKET_ADDRESS`，页面会允许用 MetaMask 直接部署市场合约，并把地址保存到浏览器 `localStorage` 的 `opcTrustMarketAddress`。
+Without `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID`, the app intentionally exposes only injected browser wallets. Add a Reown / WalletConnect project id to enable QR and mobile wallet connection.
 
-## 真实交易流程
+## Verification
 
-1. 打开 `http://localhost:3000`。
-2. 点击右上角“直连 MetaMask”。
-3. 切换到 Monad testnet。
-4. 如果页面提示没有市场合约，点击“部署市场合约”，在 MetaMask 确认部署交易。
-5. 部署成功后，页面会保存市场合约地址。
-6. 进入“上传合约”。
-7. 填写 OPC 名称、价格、标题、摘要、预览、正文和内容 URI。
-8. 点击“上传并发布到链上”。
-9. MetaMask 会确认两笔交易：`registerAsset` 和 `publishVersion`。
-10. 回到“合约广场”，点击“同步”。
-11. 选择刚发布的链上合约，点击“立即订阅”。
-12. MetaMask 确认 `subscribe(assetId)`，并支付 testnet MON。
-13. 交易确认后，可在“我的合约”和“链上账本”查看记录。
+```bash
+cd web
+npm run lint
+npm run build
 
-## 重要说明
-
-- 这是 Monad testnet 真实链上交易，不是模拟购买。
-- 当前版本默认 `openPublishing = true`，任何钱包都可以登记知识合约，避免 demo 被审核流程阻塞。
-- 只有已经登记且发布版本的链上资产才能订阅。
-- 内容正文当前存储在前端 metadata/data URI 中，生产环境应换成 IPFS、Arweave 或后端存储，并只在链上记录 hash/URI。
-- Monad RPC 的 `eth_getLogs` 单次查询限制为 100 block。前端已限制最近 100 block 并做分片查询；更完整的历史同步应部署 `indexer/`。
-
-## 常见问题
-
-### 页面说不能上传或不能交易
-
-先点击“直连 MetaMask”，确认顶部状态：
-
-- 钱包不是“未连接”
-- 网络是 `10143`
-- 交易合约不是“未配置”
-
-如果没有市场合约，先点击“部署市场合约”。
-
-### 扣了 MON，但合约广场没显示
-
-交易可能成功了，但事件同步没读回来。处理方式：
-
-1. 点击“同步”。
-2. 确认交易发生在最近 100 block 内。
-3. 如果仍未显示，使用交易哈希在 explorer 查看事件，或部署 `indexer/` 做完整历史同步。
-
-### `eth_getLogs is limited to a 100 range`
-
-这是 Monad RPC 限制。当前前端已按 100 block 范围查询。生产环境用 Envio indexer。
-
-### Foundry 安装失败
-
-本项目不再依赖 Foundry 完成 demo 部署。前端使用 `solc` 生成 bytecode，并用 MetaMask 直接部署合约。
-
-## Indexer
-
-`indexer/` 包含 Envio HyperIndex-ready 文件。合约部署并验证后，可以按 `indexer/README.md` 初始化/部署。
-
-生产环境建议：
-
-- 用 Envio 同步所有历史事件。
-- 前端配置 `NEXT_PUBLIC_INDEXER_GRAPHQL_URL`。
-- 合约广场和我的合约优先走 GraphQL，而不是直接扫 RPC logs。
-
-## 合约核心方法
-
-- `registerAsset(assetType, productionMode, priceWei, metadataUri)`
-- `publishVersion(assetId, contentHash, uri)`
-- `subscribe(assetId)` payable
-- `releaseMyEscrow(subscriptionId)`
-- `refundFirstTerm(subscriptionId)`
-- `submitStructuredFeedback(assetId, score)`
-
-## 项目结构
-
-```text
-contracts/          Solidity 市场合约
-docs/               PRD
-indexer/            Envio indexer 模板
-scripts/            合约 artifact 和部署辅助脚本
-src/domain/         可测试领域核心
-tests/              行为测试
-web/                Next.js 前端
+cd ../contracts
+forge build
+forge test -vvv
 ```

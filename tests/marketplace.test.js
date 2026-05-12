@@ -75,10 +75,12 @@ test("a Verified OPC can publish a Knowledge Asset and a buyer can complete a ve
     "OpcVerified",
     "KnowledgeAssetRegistered",
     "AssetVersionPublished",
-    "SubscriptionPurchased",
-    "StructuredFeedbackSubmitted",
+    "SubscriptionCreated",
+    "FeedbackSubmitted",
   ]);
   assert.equal(market.subscriptions[0].escrow.status, "held");
+  assert.equal(market.subscriptions[0].escrow.platformFeeMon, 0.2125);
+  assert.equal(market.subscriptions[0].escrow.sellerAmountMon, 8.2875);
   assert.equal(market.feedback[0].score, 4.7);
 });
 

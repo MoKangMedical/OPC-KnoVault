@@ -1,20 +1,35 @@
-# OPC Trust Market Indexer
+# OPC KnoVault Indexer
 
-This folder is indexer-ready for Envio HyperIndex on Monad testnet.
+This folder is an Envio HyperIndex-ready template for the deployed `OPCMarket` contract on Monad Testnet.
 
-The real Envio `contract-import` step must run after `OPCTrustMarket` is deployed and verified:
+Current demo contract:
 
-```bash
-pnpx envio@3.0.0-alpha.21 init contract-import explorer \
-  -b monad-testnet \
-  -c <OPC_TRUST_MARKET_ADDRESS> \
-  -n OPCTrustMarket \
-  -l typescript \
-  -d ./ -o ./ \
-  --all-events --single-contract --api-token ""
+```text
+0x7BF016e8f9bBC6998BB15Ed8238052ed94d44C56
 ```
 
-After import, keep the entity shapes from `schema.graphql` and merge the handlers from `src/EventHandlers.ts`.
+The frontend can run without an indexer by using the configured contract address and local demo state. Production should use this indexer to sync full historical trust events:
+
+- `OPCVerified`
+- `AssetRegistered`
+- `AssetVersionPublished`
+- `SubscriptionCreated`
+- `FeedbackSubmitted`
+- `FirstTermApproved`
+- `SubscriptionDisputed`
+- `DisputeResolved`
+
+Import the deployed and verified contract ABI, then merge the entity shapes from `schema.graphql` and handlers from `src/EventHandlers.ts`.
+
+```bash
+pnpx envio init contract-import explorer \
+  -b monad-testnet \
+  -c 0x7BF016e8f9bBC6998BB15Ed8238052ed94d44C56 \
+  -n OPCMarket \
+  -l typescript \
+  -d ./ -o ./ \
+  --all-events --single-contract
+```
 
 Prerequisites for Envio Cloud deploy are user-owned:
 

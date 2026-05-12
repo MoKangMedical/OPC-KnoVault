@@ -1,21 +1,24 @@
 type Opc @entity {
   id: ID!
   wallet: String!
+  verificationHash: String!
+  uri: String!
   verifiedAtBlock: BigInt!
   transactionHash: String!
 }
 
-type KnowledgeContract @entity {
+type KnowledgeAsset @entity {
   id: ID!
   assetId: BigInt!
-  owner: String!
+  seller: String!
   assetType: Int!
   productionMode: Int!
+  assetHash: String!
   priceWei: BigInt!
-  metadataUri: String!
-  activeVersionId: BigInt
-  contentHash: String
-  contentUri: String
+  subscriptionDuration: BigInt!
+  version: Int!
+  versionHash: String
+  versionUri: String
   subscriberCount: Int!
   feedbackCount: Int!
   scoreTotal: Int!
@@ -28,10 +31,15 @@ type Subscription @entity {
   subscriptionId: BigInt!
   assetId: BigInt!
   buyer: String!
-  activeVersionId: BigInt!
-  amountWei: BigInt!
-  expiresAt: BigInt!
-  escrowStatus: String!
+  seller: String!
+  valueWei: BigInt!
+  accessEndsAt: BigInt!
+  accessHash: String!
+  accessUri: String!
+  status: String!
+  feedbackRating: Int
+  feedbackHash: String
+  feedbackUri: String
   transactionHash: String!
 }
 

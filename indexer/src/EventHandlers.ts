@@ -1,128 +1,159 @@
 import {
-  OPCTrustMarket,
+  OPCMarket,
   Opc,
-  KnowledgeContract,
+  KnowledgeAsset,
   Subscription,
   TrustEvent,
 } from "generated";
 
-OPCTrustMarket.OpcVerified.handler(async ({ event, context }) => {
+OPCMarket.OPCVerified.handler(async ({ event, context }) => {
   const id = event.params.opc.toLowerCase();
   context.Opc.set({
     id,
     wallet: event.params.opc,
+    verificationHash: event.params.verificationHash,
+    uri: event.params.uri,
     verifiedAtBlock: event.block.number,
     transactionHash: event.transaction.hash,
   });
-  context.TrustEvent.set(trustEvent(event, "OpcVerified", { actor: event.params.opc }));
+  context.TrustEvent.set(trustEvent(event, "OPCVerified", { actor: event.params.opc }));
 });
 
-OPCTrustMarket.KnowledgeAssetRegistered.handler(async ({ event, context }) => {
+OPCMarket.AssetRegistered.handler(async ({ event, context }) => {
   const id = event.params.assetId.toString();
-  context.KnowledgeContract.set({
+  context.KnowledgeAsset.set({
     id,
     assetId: event.params.assetId,
-    owner: event.params.owner,
+    seller: event.params.seller,
     assetType: event.params.assetType,
     productionMode: event.params.productionMode,
-    priceWei: event.params.priceWei,
-    metadataUri: event.params.metadataUri,
-    activeVersionId: undefined,
-    contentHash: undefined,
-    contentUri: undefined,
+    assetHash: event.params.assetHash,
+    priceWei: event.params.price,
+    subscriptionDuration: event.params.subscriptionDuration,
+    version: 1,
+    versionHash: undefined,
+    versionUri: undefined,
     subscriberCount: 0,
     feedbackCount: 0,
     scoreTotal: 0,
     createdAtBlock: event.block.number,
     transactionHash: event.transaction.hash,
   });
-  context.TrustEvent.set(trustEvent(event, "KnowledgeAssetRegistered", {
+  context.TrustEvent.set(trustEvent(event, "AssetRegistered", {
     assetId: event.params.assetId,
-    actor: event.params.owner,
+    actor: event.params.seller,
   }));
 });
 
-OPCTrustMarket.AssetVersionPublished.handler(async ({ event, context }) => {
+OPCMarket.AssetVersionPublished.handler(async ({ event, context }) => {
   const id = event.params.assetId.toString();
-  const existing = await context.KnowledgeContract.get(id);
+  const existing = await context.KnowledgeAsset.get(id);
   if (existing) {
-    context.KnowledgeContract.set({
+    context.KnowledgeAsset.set({
       ...existing,
-      activeVersionId: event.params.versionId,
-      contentHash: event.params.contentHash,
-      contentUri: event.params.uri,
+      version: Number(event.params.version),
+      versionHash: event.params.versionHash,
+      versionUri: event.params.versionURI,
     });
   }
   context.TrustEvent.set(trustEvent(event, "AssetVersionPublished", { assetId: event.params.assetId }));
 });
 
-OPCTrustMarket.SubscriptionPurchased.handler(async ({ event, context }) => {
+OPCMarket.SubscriptionCreated.handler(async ({ event, context }) => {
   const id = event.params.subscriptionId.toString();
   context.Subscription.set({
     id,
     subscriptionId: event.params.subscriptionId,
     assetId: event.params.assetId,
     buyer: event.params.buyer,
-    activeVersionId: event.params.activeVersionId,
-    amountWei: event.params.amountWei,
-    expiresAt: event.params.expiresAt,
-    escrowStatus: "held",
+    seller: event.params.seller,
+    valueWei: event.params.value,
+    accessEndsAt: event.params.accessEndsAt,
+    accessHash: event.params.accessHash,
+    accessUri: event.params.accessURI,
+    status: "active",
+    feedbackRating: undefined,
+    feedbackHash: undefined,
+    feedbackUri: undefined,
     transactionHash: event.transaction.hash,
   });
 
   const assetId = event.params.assetId.toString();
-  const existing = await context.KnowledgeContract.get(assetId);
+  const existing = await context.KnowledgeAsset.get(assetId);
   if (existing) {
-    context.KnowledgeContract.set({
+    context.KnowledgeAsset.set({
       ...existing,
       subscriberCount: existing.subscriberCount + 1,
     });
   }
 
-  context.TrustEvent.set(trustEvent(event, "SubscriptionPurchased", {
+  context.TrustEvent.set(trustEvent(event, "SubscriptionCreated", {
     assetId: event.params.assetId,
     subscriptionId: event.params.subscriptionId,
     actor: event.params.buyer,
   }));
 });
 
-OPCTrustMarket.StructuredFeedbackSubmitted.handler(async ({ event, context }) => {
-  const assetId = event.params.assetId.toString();
-  const existing = await context.KnowledgeContract.get(assetId);
+OPCMarket.FeedbackSubmitted.handler(async ({ event, context }) => {
+  const subscriptionId = event.params.subscriptionId.toString();
+  const subscription = await context.Subscription.get(subscriptionId);
+  if (subscription) {
+    context.Subscription.set({
+      ...subscription,
+      feedbackRating: event.params.rating,
+      feedbackHash: event.params.feedbackHash,
+      feedbackUri: event.params.feedbackURI,
+    });
+
+    const assetId = subscription.assetId.toString();
+    const asset = await context.KnowledgeAsset.get(assetId);
+    if (asset) {
+      context.KnowledgeAsset.set({
+        ...asset,
+        feedbackCount: asset.feedbackCount + 1,
+        scoreTotal: asset.scoreTotal + event.params.rating,
+      });
+    }
+  }
+
+  context.TrustEvent.set(trustEvent(event, "FeedbackSubmitted", {
+    subscriptionId: event.params.subscriptionId,
+  }));
+});
+
+OPCMarket.FirstTermApproved.handler(async ({ event, context }) => {
+  const id = event.params.subscriptionId.toString();
+  const existing = await context.Subscription.get(id);
   if (existing) {
-    context.KnowledgeContract.set({
+    context.Subscription.set({ ...existing, status: "released" });
+  }
+  context.TrustEvent.set(trustEvent(event, "FirstTermApproved", {
+    subscriptionId: event.params.subscriptionId,
+  }));
+});
+
+OPCMarket.SubscriptionDisputed.handler(async ({ event, context }) => {
+  const id = event.params.subscriptionId.toString();
+  const existing = await context.Subscription.get(id);
+  if (existing) {
+    context.Subscription.set({ ...existing, status: "disputed" });
+  }
+  context.TrustEvent.set(trustEvent(event, "SubscriptionDisputed", {
+    subscriptionId: event.params.subscriptionId,
+  }));
+});
+
+OPCMarket.DisputeResolved.handler(async ({ event, context }) => {
+  const id = event.params.subscriptionId.toString();
+  const existing = await context.Subscription.get(id);
+  if (existing) {
+    context.Subscription.set({
       ...existing,
-      feedbackCount: existing.feedbackCount + 1,
-      scoreTotal: existing.scoreTotal + event.params.score,
+      status: event.params.refundedBuyer ? "refunded" : "released",
     });
   }
-  context.TrustEvent.set(trustEvent(event, "StructuredFeedbackSubmitted", {
-    assetId: event.params.assetId,
-    actor: event.params.buyer,
-  }));
-});
-
-OPCTrustMarket.EscrowReleased.handler(async ({ event, context }) => {
-  const id = event.params.subscriptionId.toString();
-  const existing = await context.Subscription.get(id);
-  if (existing) {
-    context.Subscription.set({ ...existing, escrowStatus: "released" });
-  }
-  context.TrustEvent.set(trustEvent(event, "EscrowReleased", {
+  context.TrustEvent.set(trustEvent(event, "DisputeResolved", {
     subscriptionId: event.params.subscriptionId,
-    actor: event.params.seller,
-  }));
-});
-
-OPCTrustMarket.FirstTermRefunded.handler(async ({ event, context }) => {
-  const id = event.params.subscriptionId.toString();
-  const existing = await context.Subscription.get(id);
-  if (existing) {
-    context.Subscription.set({ ...existing, escrowStatus: "refunded" });
-  }
-  context.TrustEvent.set(trustEvent(event, "FirstTermRefunded", {
-    subscriptionId: event.params.subscriptionId,
-    actor: event.params.buyer,
   }));
 });
 

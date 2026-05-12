@@ -164,7 +164,7 @@ export function subscribeToAsset(market, input) {
 
   const now = new Date(input.now ?? market.now);
   const expiresAt = new Date(now.getTime() + THIRTY_DAYS_MS).toISOString();
-  const platformFeeMon = normalizeMon(asset.priceMon * 0.08);
+  const platformFeeMon = normalizeMon(asset.priceMon * 0.025);
   const sellerAmountMon = normalizeMon(asset.priceMon - platformFeeMon);
   const counters = increment(market.counters, "subscription");
   const subscription = {
@@ -186,7 +186,7 @@ export function subscribeToAsset(market, input) {
     ...market,
     counters,
     subscriptions: [...market.subscriptions, subscription],
-  }, "SubscriptionPurchased", {
+  }, "SubscriptionCreated", {
     assetId: asset.id,
     subscriptionId: subscription.id,
     buyerWallet: input.buyerWallet,
@@ -249,7 +249,7 @@ export function submitStructuredFeedback(market, input) {
     ...market,
     counters,
     feedback: [...market.feedback, feedback],
-  }, "StructuredFeedbackSubmitted", {
+  }, "FeedbackSubmitted", {
     assetId: input.assetId,
     feedbackId: feedback.id,
     buyerWallet: input.buyerWallet,
