@@ -78,6 +78,41 @@ const ledgerRows = [
   "FirstTermApproved: 买家确认后平台按费率结算",
 ];
 
+const trustFlowNodes: {
+  title: string;
+  detail: string;
+  icon: LucideIcon;
+}[] = [
+  {
+    title: "Verified OPC",
+    detail: "钱包 + 验证包",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Knowledge Asset",
+    detail: "预览 + URI + hash",
+    icon: Boxes,
+  },
+  {
+    title: "MON Subscription",
+    detail: "支付 + 首期托管",
+    icon: WalletCards,
+  },
+  {
+    title: "Trust Events",
+    detail: "反馈 + 放款 + 声誉",
+    icon: Gauge,
+  },
+];
+
+const visualTrustEvents = [
+  "AssetRegistered",
+  "AssetVersionPublished",
+  "SubscriptionCreated",
+  "FeedbackSubmitted",
+  "FirstTermApproved",
+];
+
 const participantEntrances: {
   title: string;
   kicker: string;
@@ -509,6 +544,16 @@ export default function MarketplaceApp() {
 
               <TradingEntrances onSelectNav={setActiveNav} />
 
+              <LiveDemoConsole
+                opportunityHash={opportunityHash}
+                selectedAsset={selectedAsset}
+                selectedOpportunity={selectedOpportunity}
+                selectedSignal={selectedSignal}
+                subscriptions={subscriptions}
+                txHash={txHash}
+                versionHash={versionHash}
+              />
+
               <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_390px]">
                 <div className="min-w-0 space-y-5">
                   {activeNav === "discover" ? (
@@ -607,7 +652,7 @@ function ProductShowcase({
   return (
     <div className="space-y-5">
       <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#0f0f13]/85 shadow-[0_28px_80px_rgba(0,0,0,0.35)]">
-        <div className="grid gap-6 p-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:p-7">
+        <div className="grid gap-6 p-5 lg:grid-cols-[minmax(0,1fr)_430px] lg:p-7">
           <div className="min-w-0">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#e2b64f]/20 bg-[#e2b64f]/10 px-3 py-1.5 text-xs font-semibold text-[#f5d98a]">
               <span className="size-1.5 rounded-full bg-[#e2b64f] shadow-[0_0_10px_rgba(226,182,79,0.9)]" />
@@ -641,20 +686,11 @@ function ProductShowcase({
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[#e2b64f]/25 bg-[linear-gradient(145deg,rgba(226,182,79,0.16),rgba(24,24,27,0.96))] p-5">
-            <p className="text-sm font-bold text-[#f5d98a]">一句话</p>
-            <h2 className="mt-2 text-2xl font-black text-white">基于 Monad 的 OPC 知识合约交易平台</h2>
-            <p className="mt-3 text-sm leading-6 text-[#d4d4d8]">
-              买家不是买一个作者主页，而是订阅一个具体 Knowledge Asset；Monad 记录市场行为证据，让声誉从真实交易中长出来。
-            </p>
-            <div className="mt-5 grid gap-2">
-              <ReadinessItem text="交易对象：Knowledge Asset" />
-              <ReadinessItem text="支付方式：MON 订阅访问权" />
-              <ReadinessItem text="可信记录：版本、订阅、反馈、托管、争议" />
-            </div>
-          </div>
+          <AnimatedTrustFlow onSelectNav={onSelectNav} />
         </div>
       </section>
+
+      <DemoStoryboard onSelectNav={onSelectNav} />
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {productCards.map((card) => {
@@ -790,6 +826,247 @@ function ProductShowcase({
           </div>
         </div>
       </section>
+    </div>
+  );
+}
+
+function AnimatedTrustFlow({
+  onSelectNav,
+}: {
+  onSelectNav: (id: string) => void;
+}) {
+  return (
+    <div className="demo-scan relative overflow-hidden rounded-2xl border border-[#e2b64f]/25 bg-[linear-gradient(145deg,rgba(226,182,79,0.16),rgba(24,24,27,0.96))] p-5">
+      <div className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full border border-[#e2b64f]/20" />
+      <div className="pointer-events-none absolute -bottom-20 left-8 size-48 rounded-full border border-[#6b7db3]/20" />
+
+      <div className="relative">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-bold text-[#f5d98a]">Live demo flow</p>
+            <h2 className="mt-2 text-2xl font-black text-white">
+              从资产上架到可信交易
+            </h2>
+          </div>
+          <span className="rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2 text-xs font-bold text-white">
+            5 min
+          </span>
+        </div>
+
+        <p className="mt-3 text-sm leading-6 text-[#d4d4d8]">
+          买家不是浏览静态 PDF，而是在订阅一个 Knowledge Contract；每一步都会留下可追踪的市场事件。
+        </p>
+
+        <div className="relative mt-5 rounded-2xl border border-white/10 bg-[#09090b]/45 p-4">
+          <div className="trust-flow-line absolute left-8 right-8 top-[52px] h-px bg-white/10" />
+          <div className="relative grid grid-cols-4 gap-2">
+            {trustFlowNodes.map((node, index) => {
+              const Icon = node.icon;
+
+              return (
+                <div className="min-w-0 text-center" key={node.title}>
+                  <div className="mx-auto flex size-11 items-center justify-center rounded-2xl border border-[#e2b64f]/35 bg-[#e2b64f]/15 text-[#f5d98a] shadow-[0_0_24px_rgba(226,182,79,0.12)]">
+                    <Icon size={18} />
+                  </div>
+                  <p className="mt-3 truncate text-xs font-black text-white">{node.title}</p>
+                  <p className="mt-1 hidden text-[11px] leading-4 text-[#a1a1aa] sm:block">
+                    {node.detail}
+                  </p>
+                  <span className="mt-2 inline-flex size-6 items-center justify-center rounded-full bg-white/[0.06] text-[10px] font-black text-[#f5d98a]">
+                    {index + 1}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-2">
+          {visualTrustEvents.map((event, index) => (
+            <div
+              className="trust-event-row flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.035] px-3 py-2.5"
+              key={event}
+              style={{ animationDelay: `${index * 0.34}s` }}
+            >
+              <span className="flex items-center gap-2 text-xs font-bold text-white">
+                <span className="size-1.5 rounded-full bg-[#e2b64f]" />
+                {event}
+              </span>
+              <span className="text-xs font-semibold text-[#a1a1aa]">
+                on Monad
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <button
+          className="mt-5 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#e2b64f] text-sm font-black text-[#09090b] transition hover:bg-[#f5d98a]"
+          onClick={() => onSelectNav("discover")}
+          type="button"
+        >
+          打开交易演示
+          <ArrowUpRight size={16} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function DemoStoryboard({
+  onSelectNav,
+}: {
+  onSelectNav: (id: string) => void;
+}) {
+  return (
+    <section className="rounded-2xl border border-white/10 bg-[#0f0f13]/85 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.28)]">
+      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h2 className="text-xl font-black text-white">Demo 一条线看懂</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-[#a1a1aa]">
+            评委只需要跟随这条动态链路：资产上架、买家订阅、Monad 记录、反馈放款、声誉沉淀。
+          </p>
+        </div>
+        <button
+          className="flex h-11 items-center justify-center gap-2 rounded-xl border border-[#e2b64f]/40 bg-[#e2b64f]/10 px-4 text-sm font-black text-[#f5d98a] transition hover:bg-[#e2b64f] hover:text-[#09090b]"
+          onClick={() => onSelectNav("discover")}
+          type="button"
+        >
+          开始 5 分钟演示
+          <ArrowUpRight size={16} />
+        </button>
+      </div>
+
+      <div className="mt-5 grid gap-3 md:grid-cols-6">
+        {shortestLoop.map((item, index) => (
+          <button
+            className="demo-step-card relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.025] p-4 text-left transition hover:border-[#e2b64f]/35"
+            key={item}
+            onClick={() => onSelectNav(index < 2 ? "assets" : index < 4 ? "discover" : "subscriptions")}
+            style={{ animationDelay: `${index * 0.18}s` }}
+            type="button"
+          >
+            <span className="flex size-8 items-center justify-center rounded-lg bg-[#e2b64f] text-xs font-black text-[#09090b]">
+              {index + 1}
+            </span>
+            <p className="mt-3 text-sm font-bold leading-5 text-white">{item}</p>
+            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div
+                className="h-full rounded-full bg-[linear-gradient(90deg,#e2b64f,#6b7db3)]"
+                style={{ width: `${Math.min(100, 28 + index * 14)}%` }}
+              />
+            </div>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function LiveDemoConsole({
+  opportunityHash,
+  selectedAsset,
+  selectedOpportunity,
+  selectedSignal,
+  subscriptions,
+  txHash,
+  versionHash,
+}: {
+  opportunityHash: string;
+  selectedAsset: CapabilityAsset;
+  selectedOpportunity: OpportunityTemplate;
+  selectedSignal: MatchSignal;
+  subscriptions: Subscription[];
+  txHash?: string;
+  versionHash: string;
+}) {
+  const activeSubscription = subscriptions.find(
+    (subscription) => subscription.assetId === selectedAsset.id,
+  );
+  const latestEvent = txHash
+    ? "SubscriptionCreated"
+    : activeSubscription?.status === "Released"
+      ? "FirstTermApproved"
+      : activeSubscription?.status === "Feedback"
+        ? "FeedbackSubmitted"
+        : "AssetVersionPublished";
+
+  return (
+    <section className="mt-5 grid gap-5 rounded-2xl border border-white/10 bg-[#0f0f13]/85 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.28)] xl:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
+      <div className="min-w-0">
+        <div className="flex items-center gap-3">
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#e2b64f]/15 text-[#f5d98a]">
+            <Workflow size={20} />
+          </div>
+          <div>
+            <h2 className="text-xl font-black text-white">实时 Demo Console</h2>
+            <p className="mt-1 text-sm leading-6 text-[#a1a1aa]">
+              当前演示正在把买家需求、资产版本、MON 支付和链上事件串成一条可信交易路径。
+            </p>
+          </div>
+        </div>
+
+        <div className="relative mt-5 rounded-2xl border border-white/10 bg-[#09090b]/45 p-4">
+          <div className="trust-flow-line absolute left-10 right-10 top-[58px] h-px bg-white/10" />
+          <div className="relative grid gap-3 md:grid-cols-4">
+            <ConsoleNode icon={Search} label="Buyer intent" value={selectedOpportunity.title} />
+            <ConsoleNode icon={BrainCircuit} label="Agent match" value={`${selectedSignal.score}% fit`} />
+            <ConsoleNode icon={LockKeyhole} label="Subscribe" value={selectedAsset.price} />
+            <ConsoleNode icon={WalletCards} label="Trust event" value={latestEvent} />
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <InfoPill label="当前资产" value={selectedAsset.title} />
+          <InfoPill label="Intent hash" value={shortAddress(opportunityHash)} />
+          <InfoPill label="Version hash" value={shortAddress(versionHash)} />
+        </div>
+      </div>
+
+      <div className="demo-scan relative min-w-0 overflow-hidden rounded-2xl border border-[#e2b64f]/25 bg-[linear-gradient(145deg,rgba(226,182,79,0.14),rgba(24,24,27,0.96))] p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#f5d98a]">
+              Live state
+            </p>
+            <h3 className="mt-2 text-lg font-black text-white">{selectedAsset.title}</h3>
+          </div>
+          <span className="rounded-xl bg-[#e2b64f] px-3 py-2 text-xs font-black text-[#09090b]">
+            {selectedSignal.score}% match
+          </span>
+        </div>
+        <div className="mt-4 grid gap-2">
+          <ReadinessItem text={`买家场景：${selectedOpportunity.buyer}`} />
+          <ReadinessItem text={`访问权：${selectedAsset.duration} / ${selectedAsset.currentVersion}`} />
+          <ReadinessItem text={`最近事件：${latestEvent}`} />
+          <ReadinessItem
+            text={
+              txHash
+                ? `最近交易：${shortAddress(txHash)}`
+                : "等待现场 MetaMask 发起 MON 订阅"
+            }
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ConsoleNode({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="relative rounded-2xl border border-white/10 bg-white/[0.025] p-4 text-center">
+      <div className="mx-auto flex size-11 items-center justify-center rounded-2xl border border-[#e2b64f]/35 bg-[#e2b64f]/15 text-[#f5d98a]">
+        <Icon size={18} />
+      </div>
+      <p className="mt-3 text-xs font-semibold uppercase text-[#71717a]">{label}</p>
+      <p className="mt-1 truncate text-sm font-black text-white">{value}</p>
     </div>
   );
 }
