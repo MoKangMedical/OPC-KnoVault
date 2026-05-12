@@ -487,6 +487,23 @@ export default function MarketplaceApp() {
                   <ChainItem icon={Clock3} label="Gas policy" value="固定交易显式 gas limit" />
                   <ChainItem icon={CheckCircle2} label="Version hash" value={shortAddress(versionHash)} />
                 </div>
+                <div className="mt-4 grid gap-2">
+                  <NetworkLink
+                    href="https://testnet.monad.xyz"
+                    label="测试 MON 水龙头"
+                    value="testnet.monad.xyz"
+                  />
+                  <NetworkLink
+                    href="https://testnet.monadexplorer.com/"
+                    label="Monad Explorer"
+                    value="testnet.monadexplorer.com"
+                  />
+                  <NetworkLink
+                    href="https://monad-testnet.socialscan.io/"
+                    label="SocialScan"
+                    value="monad-testnet.socialscan.io"
+                  />
+                </div>
                 {txHash ? (
                   <a
                     className="mt-4 flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50"
@@ -812,6 +829,31 @@ function ChainItem({
         <p className="truncate text-sm font-semibold text-slate-900">{value}</p>
       </div>
     </div>
+  );
+}
+
+function NetworkLink({
+  href,
+  label,
+  value,
+}: {
+  href: string;
+  label: string;
+  value: string;
+}) {
+  return (
+    <a
+      className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 px-3 py-3 text-sm hover:bg-slate-50"
+      href={href}
+      rel="noreferrer"
+      target="_blank"
+    >
+      <span className="font-medium text-slate-600">{label}</span>
+      <span className="flex min-w-0 items-center gap-2 truncate font-semibold text-slate-900">
+        {value}
+        <ArrowUpRight className="shrink-0 text-slate-400" size={15} />
+      </span>
+    </a>
   );
 }
 

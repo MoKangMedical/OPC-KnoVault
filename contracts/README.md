@@ -13,9 +13,12 @@ The contract is scoped to Knowledge Asset subscriptions:
 ## Monad Networks
 
 - Testnet chain ID: `10143`
+- Testnet chain ID hex: `0x279F`
 - Mainnet chain ID: `143`
 - Testnet RPC: `https://testnet-rpc.monad.xyz`
 - Mainnet RPC: `https://rpc.monad.xyz`
+- Testnet faucet: `https://testnet.monad.xyz`
+- Testnet explorers: `https://testnet.monadexplorer.com/` and `https://monad-testnet.socialscan.io/`
 
 ## Contract Surface
 
@@ -32,6 +35,8 @@ The contract is scoped to Knowledge Asset subscriptions:
 
 Default deployment uses `250` basis points, or a 2.5% platform fee.
 
+`script/DeployOPCMarket.s.sol` also verifies the deployer as a demo OPC seller and registers four demo assets. This keeps the frontend payment path usable immediately after deployment because asset ids `1` through `4` already exist onchain.
+
 ## Setup
 
 Foundry is installed in this environment as `forge 1.7.1` / `cast 1.7.1`.
@@ -46,6 +51,8 @@ forge test
 
 ## Deploy to Monad Testnet
 
+Fund the deployer wallet with testnet MON before running this command.
+
 ```bash
 cd contracts
 forge script script/DeployOPCMarket.s.sol \
@@ -59,6 +66,8 @@ After deployment, set the frontend variable:
 ```bash
 NEXT_PUBLIC_OPC_MARKET_ADDRESS=0x...
 ```
+
+Then restart the frontend dev server. The visible test prices are intentionally small: `0.018`, `0.009`, `0.026`, and `0.014` MON.
 
 ## Verify
 
